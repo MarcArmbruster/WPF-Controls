@@ -12,13 +12,17 @@
     <Grid Margin="20,0,0,0">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="a default TextBlock" />
+        <TextBox
+            Grid.Row="0"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Text="a default TextBox" />
 
         <inputCtrl:WpfTextInput
             Grid.Row="1"
@@ -36,9 +40,13 @@
             WatermarkForeground="Black"
             WatermarkImageOrientation="Left"
             WatermarkImageSource="\Images\Buch.PNG"
-            WatermarkText="ISBN-Nummer des Buches" />
+            WatermarkText="ISBN-Number of the book" />
 
-        <TextBlock Grid.Row="2" Text="another default TextBlock" />
+        <TextBox
+            Grid.Row="2"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Text="another default TextBox" />
 
     </Grid>
 </Window>

@@ -25,7 +25,7 @@ namespace MarcArmbruster.Wpf
             {
                 if (propName == nameof(this.InputText))
                 {
-                    return this.InputText?.Length > 5 ? "Eingabe zu lang!" : string.Empty;
+                    return this.InputText?.Length > 5 ? "Text is too long!" : string.Empty;
                 }
 
                 return string.Empty;
