@@ -9,14 +9,26 @@
     Width="800"
     Height="450"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Margin="20,0,0,0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="a default TextBlock" />
+
         <inputCtrl:WpfTextInput
+            Grid.Row="1"
             Width="300"
-            Height="48"
+            HorizontalAlignment="Left"
             Background="White"
             BackgroundOnDisabled="LightGray"
             BorderBrush="Gray"
             BorderThickness="1"
+            ForbiddenCharacters="aA"
             IsEnabled="True"
             IsReadOnly="False"
             Text="{Binding Path=InputText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}"
@@ -25,5 +37,8 @@
             WatermarkImageOrientation="Left"
             WatermarkImageSource="\Images\Buch.PNG"
             WatermarkText="ISBN-Nummer des Buches" />
+
+        <TextBlock Grid.Row="2" Text="another default TextBlock" />
+
     </Grid>
 </Window>

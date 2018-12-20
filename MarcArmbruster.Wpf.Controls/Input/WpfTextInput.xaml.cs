@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Linq;
 using System.Windows.Media;
+using System.Windows.Input;
 
 namespace MarcArmbruster.Wpf.Controls.Input
 {
@@ -14,6 +15,9 @@ namespace MarcArmbruster.Wpf.Controls.Input
 
         private static Brush defaultDisabledBackgroundBrush = Brushes.LightGray;
         private static Brush activeBackgroundBrush = Brushes.White;
+
+        private string valueBeforePasting;
+        private bool isPasting;
 
         #endregion Private Fields
 
@@ -161,17 +165,18 @@ namespace MarcArmbruster.Wpf.Controls.Input
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(WpfTextInput), new PropertyMetadata(string.Empty, TextChanged));
 
-
-
-        public char[] ForbiddenCharacters
+        /// <summary>
+        /// Forbidden input characters: will be ignored while input and pasting.
+        /// </summary>
+        public string ForbiddenCharacters
         {
-            get { return (char[])GetValue(ForbiddenCharactersProperty); }
+            get { return (string)GetValue(ForbiddenCharactersProperty); }
             set { SetValue(ForbiddenCharactersProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ForbiddenCharacters.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ForbiddenCharactersProperty =
-            DependencyProperty.Register("ForbiddenCharacters", typeof(char[]), typeof(WpfTextInput), new PropertyMetadata(new char[] { }));
+            DependencyProperty.Register("ForbiddenCharacters", typeof(string), typeof(WpfTextInput), new PropertyMetadata(string.Empty));
 
         #endregion Dependency Properties
 
@@ -300,12 +305,18 @@ namespace MarcArmbruster.Wpf.Controls.Input
             }
         }
 
+        /// <summary>
+        /// Hides the validation info object.
+        /// </summary>
         private void HideValidationErrorText()
         {
             this.txtError.Visibility = Visibility.Collapsed;
             this.txtError.Text = string.Empty;
         }
 
+        /// <summary>
+        /// Shows the validation info object.
+        /// </summary>
         private void ShowValidationErrorText(string error)
         {
             this.txtError.Visibility = Visibility.Visible;
@@ -320,6 +331,83 @@ namespace MarcArmbruster.Wpf.Controls.Input
         private void OnClearButtonClick(object sender, RoutedEventArgs eventArgs)
         {
             this.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// Checks for invalid inout characters.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="eventArgs">The event arguments.</param>
+        private void OnTxtInputPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {            
+            if (this.ForbiddenCharacters.Any())
+            {
+                if (this.ForbiddenCharacters.IndexOf(e.Text) > -1)
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            e.Handled = false;
+        }
+
+        /// <summary>
+        /// Checks for forbidden characters before dropoping a text. Ignores action if a forbidden characters is found.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="eventArgs">The event arguments.</param>
+        private void OnTxtInputPreviewDrop(object sender, DragEventArgs e)
+        {
+            if (this.ForbiddenCharacters.Any())
+            {
+                string text = e.Data.GetData(typeof(string)) as string;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    bool hasForbiddenCharacter = text.Any(c => this.ForbiddenCharacters.IndexOf(c) > -1);
+                    if (hasForbiddenCharacter)
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Detects pasting values.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="eventArgs">The event arguments.</param>
+        private void OnTxtInputPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.V)
+            {
+                valueBeforePasting = this.txtInput.Text;
+                isPasting = true;
+                return;
+            }
+
+            isPasting = false;
+        }
+
+        /// <summary>
+        /// Checks for forbidden characters after pasting a text. Resets to previous value if a forbidden character is found.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="eventArgs">The event arguments.</param>
+        private void OnTxtInputTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (this.isPasting)
+            {
+                this.isPasting = false;
+                bool hasForbiddenCharacter = this.txtInput.Text.Any(c => this.ForbiddenCharacters.IndexOf(c) > -1);
+                if (hasForbiddenCharacter)
+                {
+                    this.txtInput.Text = valueBeforePasting;
+                    e.Handled = true;
+                }
+            }
         }
 
         #endregion Methods

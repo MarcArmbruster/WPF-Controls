@@ -35,7 +35,11 @@
             Foreground="Black"
             IsEnabled="{Binding Path=IsEnabled, ElementName=control, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
             IsReadOnly="{Binding Path=IsReadOnly, ElementName=control, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+            PreviewDrop="OnTxtInputPreviewDrop"
+            PreviewKeyDown="OnTxtInputPreviewKeyDown"
+            PreviewTextInput="OnTxtInputPreviewTextInput"
             Text="{Binding Path=Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ElementName=control}"
+            TextChanged="OnTxtInputTextChanged"
             TextWrapping="{Binding Path=TextWrapping, ElementName=control, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
             <TextBox.Style>
                 <Style TargetType="{x:Type TextBox}">
@@ -50,7 +54,17 @@
                 </Style>
             </TextBox.Style>
         </TextBox>
-        <TextBlock x:Name="txtError" Foreground="Red" />
+        <TextBlock
+            x:Name="txtError"
+            Height="18"
+            Background="Red"
+            FontSize="12"
+            Foreground="White"
+            Opacity="0.75">
+            <TextBlock.RenderTransform>
+                <TranslateTransform X="0" Y="-28" />
+            </TextBlock.RenderTransform>
+        </TextBlock>
         <Button
             x:Name="ClearButton"
             Margin="5,0,0,0"
