@@ -50,7 +50,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFCommandAggregator, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFCommandAggregator.1.4.0\lib\4.5.2\WPFCommandAggregator.dll</HintPath>
+      <HintPath>..\packages\WPFCommandAggregator.1.5.0\lib\4.5.2\WPFCommandAggregator.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
